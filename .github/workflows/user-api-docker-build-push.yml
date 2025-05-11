@@ -1,0 +1,29 @@
+name: Backend API - Build and Push Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/backend-api-docker-build-push.yml'
+      - 'UserApi/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/user-api:${{ github.sha }} ./UserApi
+          docker push ghcr.io/${{ github.repository }}/user-api:${{ github.sha }}
