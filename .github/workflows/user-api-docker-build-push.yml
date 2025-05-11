@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/backend-api-docker-build-push.yml'
+      - '.github/workflows/user-api-docker-build-push.yml'
       - 'UserApi/**'
 
 jobs:
