@@ -1,0 +1,2 @@
+export MY_USERNAME="foo"
+export MY_PASSWORD="bar"
