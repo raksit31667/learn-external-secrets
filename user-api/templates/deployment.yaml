@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapi
+  namespace: default
+  labels:
+    app: userapi
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userapi
+      version: v1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: userapi
+        version: v1
+    spec:
+      serviceAccountName: userapi
+      containers:
+        - name: userapi
+          image: ghcr.io/raksit31667/learn-external-secrets/user-api:31cfaa16d875e0a1a58a333da1092b181e8df4e4
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MY_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-secrets
+                  key: username
+            - name: MY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-secrets
+                  key: password
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
