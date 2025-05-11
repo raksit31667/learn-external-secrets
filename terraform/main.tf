@@ -33,8 +33,8 @@ locals {
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  namespace                = "external-secrets"
-  secretstore_sa           = "secretstore-sa"
+  namespace              = "external-secrets"
+  cluster_secretstore_sa = "cluster-secretstore-sa"
 
   tags = {
     Blueprint  = local.name
@@ -155,7 +155,7 @@ resource "aws_secretsmanager_secret_version" "secret" {
 #---------------------------------------------------------------
 
 resource "aws_iam_policy" "secretstore" {
-  name_prefix = local.secretstore_sa
+  name_prefix = local.cluster_secretstore_sa
   policy      = <<POLICY
 {
   "Version": "2012-10-17",
@@ -195,7 +195,7 @@ module "secretstore_role" {
   oidc_providers = {
     main = {
       provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["${local.namespace}:${local.secretstore_sa}"]
+      namespace_service_accounts = ["${local.namespace}:${local.cluster_secretstore_sa}"]
     }
   }
 
