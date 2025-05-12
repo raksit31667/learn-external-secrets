@@ -103,6 +103,20 @@ module "eks_blueprints_addons" {
   tags = local.tags
 }
 
+################################################################################
+# Reloader
+################################################################################
+
+resource "helm_release" "reloader" {
+  name       = "reloader"
+  repository = "https://stakater.github.io/stakater-charts"
+  chart      = "reloader"
+  namespace  = "reloader"
+  version    = "2.1.3"
+
+  create_namespace = true
+}
+
 #---------------------------------------------------------------
 # Supporting Resources
 #---------------------------------------------------------------
